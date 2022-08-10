@@ -3,9 +3,9 @@
 //
 // This file is part of the "timed"-library which is licenced under the MIT-license. For more detail read LICENCE.
 
-#include <stdexcept>
+#include <iostream>
 
-#include "../include/Timer.h"
+#include "timed/Timer.h"
 
 namespace timed {
 
@@ -32,21 +32,27 @@ void WallTimer::stop() {
 }
 
 // _____________________________________________________________________________________________________________________
-long WallTimer::elapsedNanoseconds() const {
-  long elapsed = 0;
-  for (auto& interval: _intervals) {
-    elapsed += std::chrono::duration_cast<std::chrono::nanoseconds>(interval.second - interval.first).count();
+utils::Time WallTimer::getTime() const {
+  utils::Time time;
+  for (auto &interval: _intervals) {
+    time += std::chrono::duration_cast<std::chrono::nanoseconds>(interval.second - interval.first).count();
   }
-  return elapsed;
+  return time;
 }
 
 // ===== CPUTimer ======================================================================================================
 // ----- public --------------------------------------------------------------------------------------------------------
 // _____________________________________________________________________________________________________________________
-void CPUTimer::start() {
 #ifdef _WIN32
-  std::cout << "WARNING: Windows OS does not support CPU time measuring!" << std::endl;
+CPUTimer::CPUTimer() {
+  std::cout << "WARNING: CPU Timer not supported on Windows OS. Consider using WallTimer instead." << std::endl;
+}
+#else
+CPUTimer::CPUTimer() = default;
 #endif
+
+// _____________________________________________________________________________________________________________________
+void CPUTimer::start() {
   if (_stopped) reset();
   auto now = std::clock();
   _intervals.emplace_back(now, now);
@@ -54,34 +60,25 @@ void CPUTimer::start() {
 
 // _____________________________________________________________________________________________________________________
 void CPUTimer::pause() {
-#ifdef _WIN32
-  std::cout << "WARNING: Windows OS does not support CPU time measuring!" << std::endl;
-#endif
   auto now = std::clock();
   _intervals.back().second = now;
 }
 
 // _____________________________________________________________________________________________________________________
 void CPUTimer::stop() {
-#ifdef _WIN32
-  std::cout << "WARNING: Windows OS does not support CPU time measuring!" << std::endl;
-#endif
   auto now = std::clock();
   _intervals.back().second = now;
   _stopped = true;
 }
 
 // _____________________________________________________________________________________________________________________
-long CPUTimer::elapsedNanoseconds() const {
-#ifdef _WIN32
-  std::cout << "WARNING: Windows OS does not support CPU time measuring!" << std::endl;
-#endif
-  double elapsed = 0;
-  for (auto& interval: _intervals) {
-    elapsed += 1000.0 * static_cast<double>(interval.second - interval.first) / CLOCKS_PER_SEC;
+utils::Time CPUTimer::getTime() const {
+  utils::Time time;
+  for (auto &interval: _intervals) {
+    time += static_cast<uint64_t>(1000.0 * 1000 * 1000 * static_cast<double>(interval.second - interval.first)
+      / CLOCKS_PER_SEC);
   }
-  return static_cast<long>(elapsed * 1000 * 1000);
+  return time;
 }
-
 
 }  // namespace timed

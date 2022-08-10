@@ -1,8 +1,11 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.21)
 project(timed VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_library(Benchmark include/Benchmark.h src/Benchmark.cpp)
+include_directories(${PROJECT_SOURCE_DIR}/include/)
 
-add_library(Timer include/Timer.h src/Timer.cpp)
+add_subdirectory(src)
+
+add_subdirectory(examples)
+

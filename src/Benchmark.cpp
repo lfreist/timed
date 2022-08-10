@@ -5,8 +5,8 @@
 
 #include <iostream>
 
-#include "../include/Benchmark.h"
-#include "../include/utils/Statistics.h"
+#include "timed/Benchmark.h"
+#include "timed/utils/Statistics.h"
 
 namespace timed {
 namespace benchmark {
@@ -22,34 +22,34 @@ std::ostream &operator<<(std::ostream &os, const Config &config) {
 
 // ===== Results =======================================================================================================
 // _____________________________________________________________________________________________________________________
-void Result::addCpuTime(long value) {
-  cpuTimes.push_back(value);
+void Result::addCpuTime(utils::Time time) {
+  cpuTimes.push_back(time);
 }
 
 // _____________________________________________________________________________________________________________________
-void Result::addWallTime(long value) {
-  wallTimes.push_back(value);
+void Result::addWallTime(utils::Time time) {
+  wallTimes.push_back(time);
 }
 
 // _____________________________________________________________________________________________________________________
-std::vector<long> Result::adjustedCPUTimes() const {
-  std::vector<long> adjustedTimes(cpuTimes.size());
-  long baseline = cpuTimeBaseline;
+std::vector<utils::Time> Result::adjustedCPUTimes() const {
+  std::vector<utils::Time> adjustedTimes(cpuTimes.size());
+  utils::Time baseline = cpuTimeBaseline;
   std::transform(cpuTimes.begin(),
                  cpuTimes.end(),
                  adjustedTimes.begin(),
-                 [baseline](long x) { return x - baseline; });
+                 [baseline](utils::Time x) { return x - baseline; });
   return adjustedTimes;
 }
 
 // _____________________________________________________________________________________________________________________
-std::vector<long> Result::adjustedWallTimes() const {
-  std::vector<long> adjustedTimes(wallTimes.size());
-  long baseline = wallTimeBaseline;
+std::vector<utils::Time> Result::adjustedWallTimes() const {
+  std::vector<utils::Time> adjustedTimes(wallTimes.size());
+  utils::Time baseline = wallTimeBaseline;
   std::transform(wallTimes.begin(),
                  wallTimes.end(),
                  adjustedTimes.begin(),
-                 [baseline](long x) { return x - baseline; });
+                 [baseline](utils::Time x) { return x - baseline; });
   return adjustedTimes;
 }
 
@@ -62,19 +62,19 @@ std::ostream &operator<<(std::ostream &os, const Result &result) {
     os << "Info: " << result.info << "\n";
   }
   os << " Iterations: " << result.wallTimes.size() << "\n";
-  os << " WallTime [ns]:\n";
+  os << " WallTime:\n";
   os << "  min:       " << utils::min(adjustedWallTimes) << "\n";
   os << "  max:       " << utils::max(adjustedWallTimes) << "\n";
-  os << "  mean:      " << static_cast<ulong>(std::round(utils::mean(adjustedWallTimes))) << "\n";
-  os << "  SD:        " << static_cast<ulong>(std::round(utils::stddev(adjustedWallTimes))) << "\n";
-  os << "  median:    " << static_cast<ulong>(std::round(utils::median(adjustedWallTimes))) << "\n";
+  os << "  mean:      " << utils::mean(adjustedWallTimes) << "\n";
+  os << "  SD:        " << utils::stddev(adjustedWallTimes) << "\n";
+  os << "  median:    " << utils::median(adjustedWallTimes) << "\n";
   os << "  %err:      " << utils::medianAbsolutePercentError(adjustedWallTimes) << "\n";
-  os << " CPUTime [ns]:\n";
+  os << " CPUTime:\n";
   os << "  min:       " << utils::min(adjustedCPUTimes) << "\n";
   os << "  max:       " << utils::max(adjustedCPUTimes) << "\n";
-  os << "  mean:      " << static_cast<ulong>(std::round(utils::mean(adjustedCPUTimes))) << "\n";
-  os << "  SD:        " << static_cast<ulong>(std::round(utils::stddev(adjustedCPUTimes))) << "\n";
-  os << "  median:    " << static_cast<ulong>(std::round(utils::median(adjustedCPUTimes))) << "\n";
+  os << "  mean:      " << utils::mean(adjustedCPUTimes) << "\n";
+  os << "  SD:        " << utils::stddev(adjustedCPUTimes) << "\n";
+  os << "  median:    " << utils::median(adjustedCPUTimes) << "\n";
   os << "  %err:      " << utils::medianAbsolutePercentError(adjustedCPUTimes) << "\n";
   return os;
 }
@@ -124,8 +124,8 @@ Result &Benchmark::run(bool verbose) {
     _op();
     cpuTimer.stop();
     wallTimer.stop();
-    _result.addWallTime(wallTimer.elapsedNanoseconds());
-    _result.addCpuTime(cpuTimer.elapsedNanoseconds());
+    _result.addWallTime(wallTimer.getTime());
+    _result.addCpuTime(cpuTimer.getTime());
   }
   if (verbose) std::cout << '\r' << "✅              " << std::endl;
   _run = true;
@@ -150,11 +150,11 @@ void Benchmark::setTimerBaselines() {
     dummyOperation();
     cpuTimer.stop();
     wallTimer.stop();
-    baselineResults.addWallTime(wallTimer.elapsedNanoseconds());
-    baselineResults.addCpuTime(cpuTimer.elapsedNanoseconds());
+    baselineResults.addWallTime(wallTimer.getTime());
+    baselineResults.addCpuTime(cpuTimer.getTime());
   }
-  _result.wallTimeBaseline = static_cast<long>(std::round(utils::mean(baselineResults.wallTimes)));
-  _result.cpuTimeBaseline = static_cast<long>(std::round(utils::mean(baselineResults.cpuTimes)));
+  _result.wallTimeBaseline = utils::mean(baselineResults.wallTimes);
+  _result.cpuTimeBaseline = utils::mean(baselineResults.cpuTimes);
 }
 
 // _____________________________________________________________________________________________________________________

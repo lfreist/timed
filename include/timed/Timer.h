@@ -13,6 +13,8 @@
 #include <utility>
 #include <vector>
 
+#include "timed/utils/TimeUtils.h"
+
 namespace timed {
 
 using SteadyClockInterval = std::pair<std::chrono::time_point<std::chrono::steady_clock>, std::chrono::time_point<std::chrono::steady_clock>>;
@@ -58,7 +60,7 @@ class Timer {
    * Get elapsed nanoseconds (ns) of collected intervals
    * @return long int: in nanoseconds
    */
-  [[nodiscard]] virtual long elapsedNanoseconds() const = 0;
+  [[nodiscard]] virtual utils::Time getTime() const = 0;
 
   /**
    * Returns all collected intervals
@@ -84,7 +86,7 @@ class WallTimer : Timer<SteadyClockInterval> {
   void pause() override;
   void stop() override;
 
-  [[nodiscard]] long elapsedNanoseconds() const override;
+  [[nodiscard]] utils::Time getTime() const override;
 };
 
 
@@ -93,13 +95,13 @@ class WallTimer : Timer<SteadyClockInterval> {
  */
 class CPUTimer : Timer<ClockTInterval> {
  public:
-  CPUTimer() = default;
+  CPUTimer();
 
   void start() override;
   void pause() override;
   void stop() override;
 
-  [[nodiscard]] long elapsedNanoseconds() const override;
+  [[nodiscard]] utils::Time getTime() const override;
 };
 
 }  // namespace timed

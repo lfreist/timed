@@ -13,7 +13,8 @@
 #include <ostream>
 #include <functional>
 
-#include "Timer.h"
+#include "timed/Timer.h"
+#include "timed/utils/TimeUtils.h"
 
 namespace timed {
 namespace benchmark {
@@ -31,19 +32,18 @@ std::ostream &operator<<(std::ostream &os, const Config &config);
 struct Result {
   std::string title = "Benchmark";
   std::string info;
-  std::vector<long> wallTimes;
-  std::vector<long> cpuTimes;
-  long wallTimeBaseline = 0;
-  long cpuTimeBaseline = 0;
-  const std::string unit = "ns";
+  std::vector<utils::Time> wallTimes;
+  std::vector<utils::Time> cpuTimes;
+  utils::Time wallTimeBaseline;
+  utils::Time cpuTimeBaseline;
 
-  void addWallTime(long value);
+  void addWallTime(utils::Time time);
 
-  void addCpuTime(long value);
+  void addCpuTime(utils::Time time);
 
-  [[nodiscard]] std::vector<long> adjustedWallTimes() const;
+  [[nodiscard]] std::vector<utils::Time> adjustedWallTimes() const;
 
-  [[nodiscard]] std::vector<long> adjustedCPUTimes() const;
+  [[nodiscard]] std::vector<utils::Time> adjustedCPUTimes() const;
 };
 
 std::ostream &operator<<(std::ostream &os, const Result &result);
