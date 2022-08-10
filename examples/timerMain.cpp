@@ -36,6 +36,7 @@ int moduloCounter(int i, int  j, int k) {
 int main(int argc, char** argv) {
   timed::WallTimer wall_timer;
   timed::CPUTimer cpu_timer;
+  std::cout << wall_timer.getTime() << std::endl;
   // just sleep for 5 seconds
   std::cout << "Sleeping for 2 seconds..." << std::endl;
   wall_timer.start();

@@ -32,10 +32,24 @@ void WallTimer::stop() {
 }
 
 // _____________________________________________________________________________________________________________________
+void WallTimer::calibrate() {
+  WallTimer wt;
+  std::vector<utils::Time> t(1000);
+  for (int i = 0; i < 1000; ++i) {
+    wt.start();
+    wt.stop();
+    t[i] = wt.getTime();
+    wt.reset();
+  }
+  _baseLine = utils::mean(t);
+}
+
+// _____________________________________________________________________________________________________________________
 utils::Time WallTimer::getTime() const {
   utils::Time time;
   for (auto &interval: _intervals) {
-    time += std::chrono::duration_cast<std::chrono::nanoseconds>(interval.second - interval.first).count();
+    auto t = std::chrono::duration_cast<std::chrono::nanoseconds>(interval.second - interval.first).count();
+    time += t;
   }
   return time;
 }
@@ -43,13 +57,11 @@ utils::Time WallTimer::getTime() const {
 // ===== CPUTimer ======================================================================================================
 // ----- public --------------------------------------------------------------------------------------------------------
 // _____________________________________________________________________________________________________________________
-#ifdef _WIN32
 CPUTimer::CPUTimer() {
+#ifdef _WIN32
   std::cout << "WARNING: CPU Timer not supported on Windows OS. Consider using WallTimer instead." << std::endl;
-}
-#else
-CPUTimer::CPUTimer() = default;
 #endif
+}
 
 // _____________________________________________________________________________________________________________________
 void CPUTimer::start() {
@@ -72,6 +84,18 @@ void CPUTimer::stop() {
 }
 
 // _____________________________________________________________________________________________________________________
+void CPUTimer::calibrate() {
+  CPUTimer cput;
+  std::vector<utils::Time> t(1000);
+  for (int i = 0; i < 1000; ++i) {
+    cput.start();
+    cput.stop();
+    t.push_back(cput.getTime());
+  }
+  _baseLine = utils::mean(t);
+}
+
+// _____________________________________________________________________________________________________________________
 utils::Time CPUTimer::getTime() const {
   double time = 0;
   for (auto &interval: _intervals) {
@@ -80,7 +104,7 @@ utils::Time CPUTimer::getTime() const {
   utils::TimeValueUnit tvu;
   tvu.value = time * 1000 * 1000;
   tvu.unit = "ns";
-  return utils::Time(tvu);
+  return utils::Time(tvu) - _baseLine;
 }
 
 }  // namespace timed

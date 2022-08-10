@@ -14,6 +14,7 @@
 #include <vector>
 
 #include "timed/utils/TimeUtils.h"
+#include "timed/utils/Statistics.h"
 
 namespace timed {
 
@@ -48,6 +49,8 @@ class Timer {
    */
   virtual void stop() = 0;
 
+  virtual void calibrate() = 0;
+
   /**
    * Reset the timer
    */
@@ -73,6 +76,7 @@ class Timer {
  protected:
   bool _stopped = false;
   std::vector<Interval> _intervals;
+  utils::Time _baseLine;
 };
 
 /**
@@ -85,6 +89,8 @@ class WallTimer : Timer<SteadyClockInterval> {
   void start() override;
   void pause() override;
   void stop() override;
+
+  void calibrate() override;
 
   [[nodiscard]] utils::Time getTime() const override;
 };
@@ -100,6 +106,8 @@ class CPUTimer : Timer<ClockTInterval> {
   void start() override;
   void pause() override;
   void stop() override;
+
+  void calibrate() override;
 
   [[nodiscard]] utils::Time getTime() const override;
 };

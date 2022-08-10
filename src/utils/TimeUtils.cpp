@@ -139,8 +139,8 @@ void Time::parseTime(const std::string& time, const std::string& fmt) {
 
 // _____________________________________________________________________________________________________________________
 void Time::normalize() {
-  uint64_t ns = getNanoseconds();
-  _microseconds = ns / 1000;
+  _nanoseconds = getNanoseconds();
+  _microseconds = _nanoseconds / 1000;
   _nanoseconds = _nanoseconds - (_microseconds * 1000);
   _milliseconds = _microseconds / 1000;
   _microseconds = _microseconds - (_milliseconds * 1000);
@@ -289,73 +289,73 @@ TimeValueUnit Time::getTime() const {
 
 // _____________________________________________________________________________________________________________________
 double Time::getDays() const {
-  double d = _days;
-  d += _hours / 24;
-  d += _minutes / 24 / 60;
-  d += _seconds / 24 / 60 / 60;
-  d += _milliseconds / 24 / 60 / 60 / 1000;
-  d += _microseconds / 24 / 60 / 60 / 1000 / 1000;
-  d += _nanoseconds / 24 / 60 / 60 / 1000 / 1000 / 1000;
+  auto d = static_cast<double>(_days);
+  d += static_cast<double>(_hours) / 24;
+  d += static_cast<double>(_minutes) / 24 / 60;
+  d += static_cast<double>(_seconds) / 24 / 60 / 60;
+  d += static_cast<double>(_milliseconds) / 24 / 60 / 60 / 1000;
+  d += static_cast<double>(_microseconds) / 24 / 60 / 60 / 1000 / 1000;
+  d += static_cast<double>(_nanoseconds) / 24 / 60 / 60 / 1000 / 1000 / 1000;
   return d;
 }
 
 // _____________________________________________________________________________________________________________________
 double Time::getHours() const {
-  double h = _hours;
-  h += _days * 24;
-  h += _minutes / 60;
-  h += _seconds / 60 / 60;
-  h += _milliseconds / 60 / 60 / 1000;
-  h += _microseconds / 60 / 60 / 1000 / 1000;
-  h += _nanoseconds / 60 / 60 / 1000 / 1000 / 1000;
+  auto h = static_cast<double>(_hours);
+  h += static_cast<double>(_days) * 24;
+  h += static_cast<double>(_minutes) / 60;
+  h += static_cast<double>(_seconds) / 60 / 60;
+  h += static_cast<double>(_milliseconds) / 60 / 60 / 1000;
+  h += static_cast<double>(_microseconds) / 60 / 60 / 1000 / 1000;
+  h += static_cast<double>(_nanoseconds) / 60 / 60 / 1000 / 1000 / 1000;
   return h;
 }
 
 // _____________________________________________________________________________________________________________________
 double Time::getMinutes() const {
-  double m = _minutes;
-  m += _days * 24 * 60;
-  m += _hours * 60;
-  m += _seconds / 60;
-  m += _milliseconds / 60 / 1000;
-  m += _microseconds / 60 / 1000 / 1000;
-  m += _nanoseconds / 60 / 1000 / 1000;
+  auto m = static_cast<double>(_minutes);
+  m += static_cast<double>(_days) * 24 * 60;
+  m += static_cast<double>(_hours) * 60;
+  m += static_cast<double>(_seconds) / 60;
+  m += static_cast<double>(_milliseconds) / 60 / 1000;
+  m += static_cast<double>(_microseconds) / 60 / 1000 / 1000;
+  m += static_cast<double>(_nanoseconds) / 60 / 1000 / 1000;
   return m;
 }
 
 // _____________________________________________________________________________________________________________________
 double Time::getSeconds() const {
-  double s = _seconds;
-  s += _days * 24 * 60 * 60;
-  s += _hours * 60 * 60;
-  s += _minutes * 60;
-  s += _milliseconds / 1000;
-  s += _microseconds / 1000 / 1000;
-  s += _nanoseconds / 1000 / 1000 / 1000;
+  auto s = static_cast<double>(_seconds);
+  s += static_cast<double>(_days) * 24 * 60 * 60;
+  s += static_cast<double>(_hours) * 60 * 60;
+  s += static_cast<double>(_minutes) * 60;
+  s += static_cast<double>(_milliseconds) / 1000;
+  s += static_cast<double>(_microseconds) / 1000 / 1000;
+  s += static_cast<double>(_nanoseconds) / 1000 / 1000 / 1000;
   return s;
 }
 
 // _____________________________________________________________________________________________________________________
 double Time::getMilliseconds() const {
-  double ms = _milliseconds;
-  ms += _days * 24 * 60 * 60 * 1000;
-  ms += _hours * 60 * 60 * 1000;
-  ms += _minutes * 60 * 1000;
-  ms += _seconds * 1000;
-  ms += _microseconds / 1000;
-  ms += _nanoseconds / 1000 / 1000;
+  auto ms = static_cast<double>(_milliseconds);
+  ms += static_cast<double>(_days) * 24 * 60 * 60 * 1000;
+  ms += static_cast<double>(_hours) * 60 * 60 * 1000;
+  ms += static_cast<double>(_minutes) * 60 * 1000;
+  ms += static_cast<double>(_seconds) * 1000;
+  ms += static_cast<double>(_microseconds) / 1000;
+  ms += static_cast<double>(_nanoseconds) / 1000 / 1000;
   return ms;
 }
 
 // _____________________________________________________________________________________________________________________
 double Time::getMicroseconds() const {
-  double us = _microseconds;
-  us += _days * 24 * 60 * 60 * 1000 * 1000;
-  us += _hours * 60 * 60 * 1000 * 1000;
-  us += _minutes * 60 * 1000 * 1000;
-  us += _seconds * 1000 * 1000;
-  us += _milliseconds * 1000;
-  us += _nanoseconds / 1000;
+  auto us = static_cast<double>(_microseconds);
+  us += static_cast<double>(_days) * 24 * 60 * 60 * 1000 * 1000;
+  us += static_cast<double>(_hours) * 60 * 60 * 1000 * 1000;
+  us += static_cast<double>(_minutes) * 60 * 1000 * 1000;
+  us += static_cast<double>(_seconds) * 1000 * 1000;
+  us += static_cast<double>(_milliseconds) * 1000;
+  us += static_cast<double>(_nanoseconds) / 1000;
   return us;
 }
 
@@ -380,8 +380,11 @@ Time Time::operator+(const Time &t) const {
 
 // _____________________________________________________________________________________________________________________
 Time Time::operator-(const Time &t) const {
-  return Time(t._days - _days, t._hours - _hours, t._minutes - _minutes, t._seconds - _seconds,
-                    t._milliseconds - _milliseconds, t._microseconds - _microseconds, t._nanoseconds - _nanoseconds);
+  if (t > *this) {
+    return Time();
+  }
+  auto ns = getNanoseconds() - t.getNanoseconds();
+  return Time(0, 0, 0, 0, 0, 0, ns);
 }
 
 // _____________________________________________________________________________________________________________________
@@ -467,6 +470,12 @@ requires std::is_integral<Numeric> || std::is_floating_point<Numeric>
 #endif
 Time &Time::operator/=(Numeric value) {
   _nanoseconds = std::round(getNanoseconds() / value);
+  _days = 0;
+  _hours = 0;
+  _minutes = 0;
+  _seconds = 0;
+  _milliseconds = 0;
+  _microseconds = 0;
   normalize();
   return *this;
 }

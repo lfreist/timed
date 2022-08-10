@@ -27,6 +27,34 @@ TEST(WallTimerTest, start_stop) {
     wallTimer.start();
     SLEEP(1);
     wallTimer.stop();
-    ASSERT_NEAR(wallTimer.getTime().getSeconds(), 1, 0.01);
+    ASSERT_NEAR(wallTimer.getTime().getMilliseconds(), 1000, 1);
   }
+  {
+    WallTimer wallTimer;
+    wallTimer.start();
+    SLEEP(1);
+    wallTimer.stop();
+    wallTimer.start();
+    SLEEP(1);
+    wallTimer.stop();
+    ASSERT_NEAR(wallTimer.getTime().getMilliseconds(), 1000, 1);
+  }
+}
+
+TEST(WallTimerTest, start_pause) {
+  {
+    WallTimer wallTimer;
+    wallTimer.start();
+    SLEEP(1);
+    wallTimer.pause();
+    wallTimer.start();
+    SLEEP(1);
+    wallTimer.stop();
+    ASSERT_NEAR(wallTimer.getTime().getMilliseconds(), 2000, 2);
+  }
+}
+
+int main(int argc, char **argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }

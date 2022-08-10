@@ -99,7 +99,12 @@ utils::Time max(const std::vector<utils::Time>& vec) {
 }
 
 utils::Time mean(const std::vector<utils::Time>& vec) {
-  return std::accumulate(vec.begin(), vec.end(), utils::Time()) / vec.size();
+  std::vector<uint64_t> nsVec(vec.size());
+  std::transform(vec.begin(), vec.end(), nsVec.begin(), [](utils::Time t) { return t.getNanoseconds(); });
+  utils::TimeValueUnit tvu;
+  tvu.value = mean(nsVec);
+  tvu.unit = "ns";
+  return utils::Time(tvu);
 }
 
 utils::Time stddev(const std::vector<utils::Time>& vec) {
