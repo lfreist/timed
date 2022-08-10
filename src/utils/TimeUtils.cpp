@@ -3,6 +3,8 @@
 //
 // This file is part of the "timed"-library which is licenced under the MIT-license. For more detail read LICENCE.
 
+#include <cmath>
+
 #include "timed/utils/TimeUtils.h"
 
 namespace timed {
@@ -249,25 +251,40 @@ double Time::timeInUnit(const std::string& unit) const {
 
 // _____________________________________________________________________________________________________________________
 TimeValueUnit Time::getTime() const {
+  TimeValueUnit tvu;
   if (_days > 4) {
-    return {getDays(), "d"};
+    tvu.value = getDays();
+    tvu.unit = "d";
+    return tvu;
   }
   if (_days > 0 || _hours > 12) {
-    return {getHours(), "h"};
+    tvu.value = getHours();
+    tvu.unit = "h";
+    return tvu;
   }
   if (_minutes > 10) {
-    return {getMinutes(), "m"};
+    tvu.value = getMinutes();
+    tvu.unit = "m";
+    return tvu;
   }
   if (_seconds > 10) {
-    return {getSeconds(), "s"};
+    tvu.value = getSeconds();
+    tvu.unit = "s";
+    return tvu;
   }
   if (_milliseconds > 500) {
-    return {getMilliseconds(), "ms"};
+    tvu.value = getMilliseconds();
+    tvu.unit = "ms";
+    return tvu;
   }
   if (_microseconds > 500) {
-    return {getMicroseconds(), "us"};
+    tvu.value = getMicroseconds();
+    tvu.unit = "us";
+    return tvu;
   }
-  return {static_cast<double>(getNanoseconds()), "ns"};
+  tvu.value = static_cast<double>(getNanoseconds());
+  tvu.unit = "ns";
+  return tvu;
 }
 
 // _____________________________________________________________________________________________________________________

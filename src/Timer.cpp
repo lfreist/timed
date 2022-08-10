@@ -73,12 +73,14 @@ void CPUTimer::stop() {
 
 // _____________________________________________________________________________________________________________________
 utils::Time CPUTimer::getTime() const {
-  utils::Time time;
+  double time = 0;
   for (auto &interval: _intervals) {
-    time += static_cast<uint64_t>(1000.0 * 1000 * 1000 * static_cast<double>(interval.second - interval.first)
-      / CLOCKS_PER_SEC);
+    time += 1000.0 * static_cast<double>(interval.second - interval.first) / CLOCKS_PER_SEC;
   }
-  return time;
+  utils::TimeValueUnit tvu;
+  tvu.value = time * 1000 * 1000;
+  tvu.unit = "ns";
+  return utils::Time(tvu);
 }
 
 }  // namespace timed

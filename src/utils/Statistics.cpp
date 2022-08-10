@@ -105,20 +105,18 @@ utils::Time mean(const std::vector<utils::Time>& vec) {
 utils::Time stddev(const std::vector<utils::Time>& vec) {
   std::vector<uint64_t> nsVec(vec.size());
   std::transform(vec.begin(), vec.end(), nsVec.begin(), [](utils::Time t) { return t.getNanoseconds(); });
-  utils::TimeValueUnit tvu {
-    medianAbsolutePercentError(nsVec),
-    "ns"
-  };
+  utils::TimeValueUnit tvu;
+  tvu.value = medianAbsolutePercentError(nsVec);
+  tvu.unit = "ns";
   return utils::Time(tvu);
 }
 
 utils::Time median(const std::vector<utils::Time>& vec) {
   std::vector<uint64_t> nsVec(vec.size());
   std::transform(vec.begin(), vec.end(), nsVec.begin(), [](utils::Time t) { return t.getNanoseconds(); });
-  utils::TimeValueUnit tvu {
-    static_cast<double>(median(nsVec)),
-    "ns"
-  };
+  utils::TimeValueUnit tvu;
+  tvu.value = median(nsVec);
+  tvu.unit = "ns";
   return utils::Time(tvu);
 }
 
