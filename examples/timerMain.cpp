@@ -34,7 +34,6 @@ int moduloCounter(int i, int  j, int k) {
 
 
 int main(int argc, char** argv) {
-
   timed::WallTimer wall_timer;
   timed::CPUTimer cpu_timer;
   // just sleep for 5 seconds
@@ -48,7 +47,7 @@ int main(int argc, char** argv) {
   std::cout << "CPU Time : " << cpu_timer.getTime() << std::endl;
 
   // do some computations
-  std::cout << "Computing number of occurances of i % j = k for 0-100, 0-100, 0-100" << std::endl;
+  std::cout << "Computing number of occurrences of i % j == k for i, j, k from 0 to 100" << std::endl;
   wall_timer.start();
   cpu_timer.start();
   moduloCounter(100, 100, 100);
