@@ -1,3 +1,5 @@
+[![Linux (gcc)](https://github.com/lfreist/timed/actions/workflows/build-linux-gcc.yml/badge.svg)](https://github.com/lfreist/timed/actions/workflows/build-linux-gcc.yml)
+
 # TIMED
 > A simple timer to measure **Wall and CPU Time**. Shipped with a basic benchmark framework.
 
