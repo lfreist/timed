@@ -3,11 +3,8 @@
 //
 // This file is part of the "timed"-library which is licenced under the MIT-license. For more detail read LICENCE.
 
-#ifdef _WIN32
-#include <Windows.h>
-#else
-#include <unistd.h>
-#endif
+#include <thread>
+#include <chrono>
 
 #include <gtest/gtest.h>
 
@@ -15,29 +12,24 @@
 
 using namespace timed;
 
-#ifdef _WIN32
-#define SLEEP(x) Sleep(x * 1000)
-#else
-#define SLEEP(x) sleep(x)
-#endif
 
 TEST(WallTimerTest, start_stop) {
   {
     WallTimer wallTimer;
     wallTimer.start();
-    SLEEP(1);
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     wallTimer.stop();
-    ASSERT_NEAR(wallTimer.getTime().getMilliseconds(), 1000, 1);
+    ASSERT_NEAR(wallTimer.getTime().getMilliseconds(), 100, 1);
   }
   {
     WallTimer wallTimer;
     wallTimer.start();
-    SLEEP(1);
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     wallTimer.stop();
     wallTimer.start();
-    SLEEP(1);
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     wallTimer.stop();
-    ASSERT_NEAR(wallTimer.getTime().getMilliseconds(), 1000, 1);
+    ASSERT_NEAR(wallTimer.getTime().getMilliseconds(), 100, 1);
   }
 }
 
@@ -45,12 +37,12 @@ TEST(WallTimerTest, start_pause) {
   {
     WallTimer wallTimer;
     wallTimer.start();
-    SLEEP(1);
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     wallTimer.pause();
     wallTimer.start();
-    SLEEP(1);
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     wallTimer.stop();
-    ASSERT_NEAR(wallTimer.getTime().getMilliseconds(), 2000, 2);
+    ASSERT_NEAR(wallTimer.getTime().getMilliseconds(), 200, 2);
   }
 }
 
