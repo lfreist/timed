@@ -56,6 +56,7 @@ class Timer {
    */
   void reset() {
     _stopped = false;
+    _running = false;
     _intervals.clear();
   };
 
@@ -74,6 +75,7 @@ class Timer {
   }
 
  protected:
+  bool _running = false;
   bool _stopped = false;
   std::vector<Interval> _intervals;
   utils::Time _baseLine;

@@ -20,34 +20,79 @@ using namespace timed;
 
 #define SLEEP(x) SLEEP_S(x)
 
-#define BUSY_WAIT_S(x) [](int y) {                                         \
-                          WallTimer wt;                                    \
-                          wt.start();                                      \
-                          while (true) {                                   \
-                            wt.pause();                                    \
-                            if (wt.getTime().getSeconds() >= y) { break; } \
-                            wt.start();                                    \
-                          }                                                \
-                        }(x)                                               \
+void busy_wait(int seconds) {
+  WallTimer wt;
+  wt.start();
+  while(true) {
+    auto x = wt.getTime().getSeconds();
+    if (x >= seconds) {
+      wt.stop();
+      return;
+    }
+  }
+}
 
+#define BUSY_WAIT_S(x) [](int y) {                                  \
+                            WallTimer wt;                           \
+                            wt.start();                             \
+                            while(true) {                           \
+                              if (wt.getTime().getSeconds() >= y) { \
+                                wt.stop();                          \
+                                return;                             \
+                              }                                     \
+                            }                                       \
+                          }(x);
+
+#define BUSY_WAIT_MS(x) [](int y) {                                      \
+                            WallTimer wt;                                \
+                            wt.start();                                  \
+                            while(true) {                                \
+                              if (wt.getTime().getMilliseconds() >= y) { \
+                                wt.stop();                               \
+                                return;                                  \
+                              }                                          \
+                            }                                            \
+                          }(x);
+
+#define BUSY_WAIT_US(x) [](int y) {                                      \
+                            WallTimer wt;                                \
+                            wt.start();                                  \
+                            while(true) {                                \
+                              if (wt.getTime().getMicroseconds() >= y) { \
+                                wt.stop();                               \
+                                return;                                  \
+                              }                                          \
+                            }                                            \
+                          }(x);
+
+#define BUSY_WAIT_NS(x) [](int y) {                                     \
+                            WallTimer wt;                               \
+                            wt.start();                                 \
+                            while(true) {                               \
+                              if (wt.getTime().getNanoseconds() >= y) { \
+                                wt.stop();                              \
+                                return;                                 \
+                              }                                         \
+                            }                                           \
+                          }(x);
 
 TEST(WallTimerTest, start_stop) {
   {
     WallTimer wallTimer;
     wallTimer.start();
-    SLEEP(1);
+    SLEEP_MS(100);
     wallTimer.stop();
-    ASSERT_NEAR(wallTimer.getTime().getMilliseconds(), 1000, 1);
+    ASSERT_NEAR(wallTimer.getTime().getMilliseconds(), 100, 1);
   }
   {
     WallTimer wallTimer;
     wallTimer.start();
-    SLEEP(1);
+    SLEEP_MS(100);
     wallTimer.stop();
     wallTimer.start();
-    SLEEP(1);
+    SLEEP_MS(100);
     wallTimer.stop();
-    ASSERT_NEAR(wallTimer.getTime().getMilliseconds(), 1000, 1);
+    ASSERT_NEAR(wallTimer.getTime().getMilliseconds(), 100, 1);
   }
 }
 
@@ -55,12 +100,13 @@ TEST(WallTimerTest, start_pause) {
   {
     WallTimer wallTimer;
     wallTimer.start();
-    SLEEP(1);
+    SLEEP_MS(100);
     wallTimer.pause();
+    SLEEP_MS(100);
     wallTimer.start();
-    SLEEP(1);
+    SLEEP_MS(100);
     wallTimer.stop();
-    ASSERT_NEAR(wallTimer.getTime().getMilliseconds(), 2000, 5);
+    ASSERT_NEAR(wallTimer.getTime().getMilliseconds(), 200, 5);
   }
 }
 
@@ -70,7 +116,7 @@ TEST(CPUTimerTest, start_stop) {
   {
     CPUTimer cpuTimer;
     cpuTimer.start();
-    SLEEP(1);
+    SLEEP_MS(100);
     cpuTimer.stop();
     ASSERT_NEAR(cpuTimer.getTime().getMilliseconds(), 0, 1);
   }
@@ -84,27 +130,36 @@ TEST(CPUTimerTest, start_stop) {
     cpuTimer.stop();
     ASSERT_NEAR(cpuTimer.getTime().getMilliseconds(), 0, 1);
   }
-  /*
   {
     CPUTimer cpuTimer;
     cpuTimer.start();
-    BUSY_WAIT_S(1);
+    BUSY_WAIT_MS(100);
     cpuTimer.stop();
-    ASSERT_NEAR(cpuTimer.getTime().getMilliseconds(), 1000, 5);
+    ASSERT_NEAR(cpuTimer.getTime().getMilliseconds(), 100, 1);
   }
-   */
+  {
+    CPUTimer cpuTimer;
+    cpuTimer.start();
+    BUSY_WAIT_MS(100);
+    cpuTimer.stop();
+    cpuTimer.start();
+    BUSY_WAIT_MS(100);
+    cpuTimer.stop();
+    ASSERT_NEAR(cpuTimer.getTime().getMilliseconds(), 100, 1);
+  }
 }
 
 TEST(CPUTimerTest, start_pause) {
   {
     CPUTimer cpuTimer;
     cpuTimer.start();
-    SLEEP(1);
+    BUSY_WAIT_MS(100);
     cpuTimer.pause();
+    BUSY_WAIT_MS(100);
     cpuTimer.start();
-    SLEEP(1);
+    BUSY_WAIT_MS(100);
     cpuTimer.stop();
-    ASSERT_NEAR(cpuTimer.getTime().getMilliseconds(), 2000, 5);
+    ASSERT_NEAR(cpuTimer.getTime().getMilliseconds(), 200, 1);
   }
 }
 

@@ -13,15 +13,19 @@ namespace timed {
 // ----- public --------------------------------------------------------------------------------------------------------
 // _____________________________________________________________________________________________________________________
 void WallTimer::start() {
+  if (_running) { return; }
   if (_stopped) reset();
+  _running = true;
   auto now = std::chrono::steady_clock::now();
   _intervals.emplace_back(now, now);
 }
 
 // _____________________________________________________________________________________________________________________
 utils::Time WallTimer::pause() {
+  if (!_running) { return getTime(); }
   auto now = std::chrono::steady_clock::now();
   _intervals.back().second = now;
+  _running = false;
   return utils::Time(0, 0, 0, 0, 0, 0,
                      std::chrono::duration_cast<std::chrono::nanoseconds>(
                          _intervals.back().second - _intervals.back().first).count());
@@ -29,9 +33,11 @@ utils::Time WallTimer::pause() {
 
 // _____________________________________________________________________________________________________________________
 utils::Time WallTimer::stop() {
+  if (!_running) { return getTime(); }
   auto now = std::chrono::steady_clock::now();
   _intervals.back().second = now;
   _stopped = true;
+  _running = false;
   return getTime();
 }
 
@@ -49,10 +55,18 @@ void WallTimer::calibrate() {
 
 // _____________________________________________________________________________________________________________________
 utils::Time WallTimer::getTime() const {
+  std::chrono::time_point<std::chrono::steady_clock> now;
+  if (_running) {
+    now = std::chrono::steady_clock::now();
+  }
   utils::Time time;
   for (auto &interval: _intervals) {
-    auto t = std::chrono::duration_cast<std::chrono::nanoseconds>(interval.second - interval.first).count();
-    time += t;
+    if (_running && interval == _intervals.back()) {
+      time += std::chrono::duration_cast<std::chrono::nanoseconds>(now - interval.first).count();
+    }
+    else {
+      time += std::chrono::duration_cast<std::chrono::nanoseconds>(interval.second - interval.first).count();
+    }
   }
   return time;
 }
@@ -68,25 +82,31 @@ CPUTimer::CPUTimer() {
 
 // _____________________________________________________________________________________________________________________
 void CPUTimer::start() {
+  if (_running) return;
   if (_stopped) reset();
+  _running = true;
   auto now = std::clock();
   _intervals.emplace_back(now, now);
 }
 
 // _____________________________________________________________________________________________________________________
 utils::Time CPUTimer::pause() {
+  if (!_running) { return getTime(); }
   auto now = std::clock();
   _intervals.back().second = now;
   auto ms = static_cast<uint64_t>(1000.0 * static_cast<double>(_intervals.back().second - _intervals.back().first) /
                                   CLOCKS_PER_SEC);
+  _running = false;
   return utils::Time(0, 0, 0, 0, ms, 0, 0);
 }
 
 // _____________________________________________________________________________________________________________________
 utils::Time CPUTimer::stop() {
+  if (!_running) { return getTime(); }
   auto now = std::clock();
   _intervals.back().second = now;
   _stopped = true;
+  _running = false;
   return getTime();
 }
 
