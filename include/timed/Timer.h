@@ -16,9 +16,66 @@
 #include "timed/utils/TimeUtils.h"
 #include "timed/utils/Statistics.h"
 
+// ----- sleep macros --------------------------------------------------------------------------------------------------
+#define SLEEP_S(x) std::this_thread::sleep_for(std::chrono::seconds(x))
+#define SLEEP_MS(x) std::this_thread::sleep_for(std::chrono::milliseconds(x))
+#define SLEEP_US(x) std::this_thread::sleep_for(std::chrono::microseconds(x))
+#define SLEEP_NS(x) std::this_thread::sleep_for(std::chrono::nanoseconds (x))
+
+#define SLEEP(x) SLEEP_S(x)
+
+#define BUSY_WAIT_S(x) [](int y) {                                  \
+                            WallTimer wt;                           \
+                            wt.start();                             \
+                            while(true) {                           \
+                              if (wt.getTime().getSeconds() >= y) { \
+                                wt.stop();                          \
+                                return;                             \
+                              }                                     \
+                            }                                       \
+                          }(x)
+
+#define BUSY_WAIT_MS(x) [](int y) {                                      \
+                            WallTimer wt;                                \
+                            wt.start();                                  \
+                            while(true) {                                \
+                              if (wt.getTime().getMilliseconds() >= y) { \
+                                wt.stop();                               \
+                                return;                                  \
+                              }                                          \
+                            }                                            \
+                          }(x)
+
+#define BUSY_WAIT_US(x) [](int y) {                                      \
+                            WallTimer wt;                                \
+                            wt.start();                                  \
+                            while(true) {                                \
+                              if (wt.getTime().getMicroseconds() >= y) { \
+                                wt.stop();                               \
+                                return;                                  \
+                              }                                          \
+                            }                                            \
+                          }(x)
+
+#define BUSY_WAIT_NS(x) [](int y) {                                     \
+                            WallTimer wt;                               \
+                            wt.start();                                 \
+                            while(true) {                               \
+                              if (wt.getTime().getNanoseconds() >= y) { \
+                                wt.stop();                              \
+                                return;                                 \
+                              }                                         \
+                            }                                           \
+                          }(x)
+
+// ---------------------------------------------------------------------------------------------------------------------
+
 namespace timed {
 
-using SteadyClockInterval = std::pair<std::chrono::time_point<std::chrono::steady_clock>, std::chrono::time_point<std::chrono::steady_clock>>;
+using SteadyClockInterval = std::pair<
+    std::chrono::time_point<std::chrono::steady_clock>,
+    std::chrono::time_point<std::chrono::steady_clock>
+    >;
 using ClockTInterval = std::pair<std::clock_t, std::clock_t>;
 
 /**
@@ -70,7 +127,7 @@ class Timer {
    * Returns all collected intervals
    * @return Interval
    */
-  [[nodiscard]] std::vector<Interval>& getIntervals() const {
+  [[nodiscard]] std::vector<Interval> &getIntervals() const {
     return _intervals;
   }
 
@@ -89,7 +146,9 @@ class WallTimer : Timer<SteadyClockInterval> {
   WallTimer() = default;
 
   void start() override;
+
   utils::Time pause() override;
+
   utils::Time stop() override;
 
   void calibrate() override;
@@ -106,7 +165,9 @@ class CPUTimer : Timer<ClockTInterval> {
   CPUTimer();
 
   void start() override;
+
   utils::Time pause() override;
+
   utils::Time stop() override;
 
   void calibrate() override;
