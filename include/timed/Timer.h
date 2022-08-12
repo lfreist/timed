@@ -42,12 +42,12 @@ class Timer {
   /**
    * Pauses the timer. Timer can be resumed using start()
    */
-  virtual void pause() = 0;
+  virtual utils::Time pause() = 0;
 
   /**
    * Stops the timer. If start() is called subsequent, it will remove previous data
    */
-  virtual void stop() = 0;
+  virtual utils::Time stop() = 0;
 
   virtual void calibrate() = 0;
 
@@ -87,8 +87,8 @@ class WallTimer : Timer<SteadyClockInterval> {
   WallTimer() = default;
 
   void start() override;
-  void pause() override;
-  void stop() override;
+  utils::Time pause() override;
+  utils::Time stop() override;
 
   void calibrate() override;
 
@@ -104,8 +104,8 @@ class CPUTimer : Timer<ClockTInterval> {
   CPUTimer();
 
   void start() override;
-  void pause() override;
-  void stop() override;
+  utils::Time pause() override;
+  utils::Time stop() override;
 
   void calibrate() override;
 

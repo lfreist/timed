@@ -16,6 +16,8 @@
 #include "timed/Timer.h"
 #include "timed/utils/TimeUtils.h"
 
+#define BENCHMARK(func, ...) [](auto&& func, auto&& ...__VA_ARGS__)
+
 namespace timed {
 namespace benchmark {
 

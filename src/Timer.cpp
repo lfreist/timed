@@ -19,16 +19,20 @@ void WallTimer::start() {
 }
 
 // _____________________________________________________________________________________________________________________
-void WallTimer::pause() {
+utils::Time WallTimer::pause() {
   auto now = std::chrono::steady_clock::now();
   _intervals.back().second = now;
+  return utils::Time(0, 0, 0, 0, 0, 0,
+                     std::chrono::duration_cast<std::chrono::nanoseconds>(
+                         _intervals.back().second - _intervals.back().first).count());
 }
 
 // _____________________________________________________________________________________________________________________
-void WallTimer::stop() {
+utils::Time WallTimer::stop() {
   auto now = std::chrono::steady_clock::now();
   _intervals.back().second = now;
   _stopped = true;
+  return getTime();
 }
 
 // _____________________________________________________________________________________________________________________
@@ -37,8 +41,7 @@ void WallTimer::calibrate() {
   std::vector<utils::Time> t(1000);
   for (int i = 0; i < 1000; ++i) {
     wt.start();
-    wt.stop();
-    t[i] = wt.getTime();
+    t[i] = wt.stop();
     wt.reset();
   }
   _baseLine = utils::mean(t);
@@ -71,16 +74,20 @@ void CPUTimer::start() {
 }
 
 // _____________________________________________________________________________________________________________________
-void CPUTimer::pause() {
+utils::Time CPUTimer::pause() {
   auto now = std::clock();
   _intervals.back().second = now;
+  auto ms = static_cast<uint64_t>(1000.0 * static_cast<double>(_intervals.back().second - _intervals.back().first) /
+                                  CLOCKS_PER_SEC);
+  return utils::Time(0, 0, 0, 0, ms, 0, 0);
 }
 
 // _____________________________________________________________________________________________________________________
-void CPUTimer::stop() {
+utils::Time CPUTimer::stop() {
   auto now = std::clock();
   _intervals.back().second = now;
   _stopped = true;
+  return getTime();
 }
 
 // _____________________________________________________________________________________________________________________
