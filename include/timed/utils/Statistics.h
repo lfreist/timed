@@ -18,13 +18,21 @@ template<typename Numeric>
 #if __cplusplus >= 202002L
 requires std::is_integral<Numeric> || std::is_floating_point<Numeric>
 #endif
+#ifdef _WIN32
+Numeric (min)(const std::vector<Numeric> &vec);
+#else
 Numeric min(const std::vector<Numeric> &vec);
+#endif
 
 template<typename Numeric>
 #if __cplusplus >= 202002L
 requires std::is_integral<Numeric> || std::is_floating_point<Numeric>
 #endif
+#ifdef _WIN32
+Numeric (max)(const std::vector<Numeric> &vec);
+#else
 Numeric max(const std::vector<Numeric> &vec);
+#endif
 
 template<typename Numeric>
 #if __cplusplus >= 202002L
@@ -50,9 +58,15 @@ requires std::is_integral<Numeric> || std::is_floating_point<Numeric>
 #endif
 double medianAbsolutePercentError(std::vector<Numeric> vec);
 
+#ifdef _WIN32
+utils::Time (min)(const std::vector<utils::Time>& vec);
+
+utils::Time (max)(const std::vector<utils::Time>& vec);
+#else
 utils::Time min(const std::vector<utils::Time>& vec);
 
 utils::Time max(const std::vector<utils::Time>& vec);
+#endif
 
 utils::Time mean(const std::vector<utils::Time>& vec);
 
