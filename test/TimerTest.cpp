@@ -76,6 +76,22 @@ TEST(WallTimerTest, start_pause) {
   }
 }
 
+TEST(WallTimerTest, multithreaded_task) {
+  {
+    auto threadedBusyWait = []() -> void {
+      std::thread t1 = std::thread(BUSY_WAIT_MS, 100);
+      std::thread t2 = std::thread(BUSY_WAIT_MS, 100);
+      t1.join();
+      t2.join();
+    };
+    WallTimer wallTimer;
+    wallTimer.start();
+    threadedBusyWait();
+    auto time = wallTimer.stop();
+    ASSERT_NEAR(time.getMilliseconds(), 100, 1);
+  }
+}
+
 #ifdef _WIN32
 #else
 TEST(CPUTimerTest, start_stop) {
@@ -161,6 +177,22 @@ TEST(CPUTimerTest, start_pause) {
     cpuTimer.start();
     BUSY_WAIT_MS(100);
     time = cpuTimer.stop();
+    ASSERT_NEAR(time.getMilliseconds(), 200, 1);
+  }
+}
+
+TEST(CPUTimerTest, multithreaded_task) {
+  {
+    auto threadedBusyWait = []() -> void {
+      std::thread t1 = std::thread(BUSY_WAIT_MS, 100);
+      std::thread t2 = std::thread(BUSY_WAIT_MS, 100);
+      t1.join();
+      t2.join();
+    };
+    CPUTimer cpuTimer;
+    cpuTimer.start();
+    threadedBusyWait();
+    auto time = cpuTimer.stop();
     ASSERT_NEAR(time.getMilliseconds(), 200, 1);
   }
 }

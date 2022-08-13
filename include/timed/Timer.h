@@ -24,49 +24,49 @@
 
 #define SLEEP(x) SLEEP_S(x)
 
-#define BUSY_WAIT_S(x) [](int y) {                                  \
-                            WallTimer wt;                           \
-                            wt.start();                             \
-                            while(true) {                           \
-                              if (wt.getTime().getSeconds() >= y) { \
-                                wt.stop();                          \
-                                return;                             \
-                              }                                     \
-                            }                                       \
-                          }(x)
+#define BUSY_WAIT_S [](int y) {                                  \
+                         WallTimer wt;                           \
+                         wt.start();                             \
+                         while(true) {                           \
+                           if (wt.getTime().getSeconds() >= y) { \
+                             wt.stop();                          \
+                             return;                             \
+                           }                                     \
+                         }                                       \
+                       }
 
-#define BUSY_WAIT_MS(x) [](int y) {                                      \
-                            WallTimer wt;                                \
-                            wt.start();                                  \
-                            while(true) {                                \
-                              if (wt.getTime().getMilliseconds() >= y) { \
-                                wt.stop();                               \
-                                return;                                  \
-                              }                                          \
-                            }                                            \
-                          }(x)
+#define BUSY_WAIT_MS [](int y) {                                       \
+                          WallTimer wt;                                \
+                          wt.start();                                  \
+                          while(true) {                                \
+                            if (wt.getTime().getMilliseconds() >= y) { \
+                              wt.stop();                               \
+                              return;                                  \
+                            }                                          \
+                          }                                            \
+                        }
 
-#define BUSY_WAIT_US(x) [](int y) {                                      \
-                            WallTimer wt;                                \
-                            wt.start();                                  \
-                            while(true) {                                \
-                              if (wt.getTime().getMicroseconds() >= y) { \
-                                wt.stop();                               \
-                                return;                                  \
-                              }                                          \
-                            }                                            \
-                          }(x)
+#define BUSY_WAIT_US [](int y) {                                       \
+                          WallTimer wt;                                \
+                          wt.start();                                  \
+                          while(true) {                                \
+                            if (wt.getTime().getMicroseconds() >= y) { \
+                              wt.stop();                               \
+                              return;                                  \
+                            }                                          \
+                          }                                            \
+                        }
 
-#define BUSY_WAIT_NS(x) [](int y) {                                     \
-                            WallTimer wt;                               \
-                            wt.start();                                 \
-                            while(true) {                               \
-                              if (wt.getTime().getNanoseconds() >= y) { \
-                                wt.stop();                              \
-                                return;                                 \
-                              }                                         \
-                            }                                           \
-                          }(x)
+#define BUSY_WAIT_NS [](int y) {                                      \
+                          WallTimer wt;                               \
+                          wt.start();                                 \
+                          while(true) {                               \
+                            if (wt.getTime().getNanoseconds() >= y) { \
+                              wt.stop();                              \
+                              return;                                 \
+                            }                                         \
+                          }                                           \
+                        }
 
 // ---------------------------------------------------------------------------------------------------------------------
 
