@@ -71,6 +71,17 @@ Time::Time(const std::string& time, const std::string& fmt) {
 }
 
 // _____________________________________________________________________________________________________________________
+void Time::reset() {
+  _days = 0;
+  _hours = 0;
+  _minutes = 0;
+  _seconds = 0;
+  _milliseconds = 0;
+  _microseconds = 0;
+  _nanoseconds = 0;
+}
+
+// _____________________________________________________________________________________________________________________
 void Time::parseTime(const std::string& time, const std::string& fmt) {
   bool lastPercent = false;
   int timeIndex = 0;

@@ -31,6 +31,8 @@ class Time {
 
   Time(const std::string& time, const std::string& fmt);
 
+  void reset();
+
   void parseTime(const std::string& time, const std::string& fmt);
 
   std::string format(const std::string& fmt = "auto") const;
