@@ -12,7 +12,7 @@
 
 namespace stats = timed::utils;
 
-TEST(Statistics, min) {
+TEST(StatisticsTest, min) {
   {
     std::vector<int> v {1, 10, 5, 1};
     ASSERT_EQ(1, stats::min(v));
@@ -37,7 +37,7 @@ TEST(Statistics, min) {
   }
 }
 
-TEST(Statistics, max) {
+TEST(StatisticsTest, max) {
   {
     std::vector<int> v {1, 10, 5, 1};
     ASSERT_EQ(10, stats::max(v));
@@ -62,7 +62,7 @@ TEST(Statistics, max) {
   }
 }
 
-TEST(Statistics, mean) {
+TEST(StatisticsTest, mean) {
   {
     std::vector<int> v {2, 2, 2, 4};
     ASSERT_FLOAT_EQ(2.5, stats::mean(v));
@@ -70,7 +70,7 @@ TEST(Statistics, mean) {
   // TODO: add more
 }
 
-TEST(Statistics, stddev) {
+TEST(StatisticsTest, stddev) {
   {
     std::vector<int> v {2, 2, 2, 4};
     ASSERT_FLOAT_EQ(sqrt(0.75), stats::stddev(v));
@@ -78,7 +78,7 @@ TEST(Statistics, stddev) {
   // TODO: add more
 }
 
-TEST(Statistics, median) {
+TEST(StatisticsTest, median) {
   {
     std::vector<int> v {1, 2, 3, 4};
     ASSERT_EQ(2, stats::median(v));
@@ -88,7 +88,7 @@ TEST(Statistics, median) {
 }
 
 // TODO: add missing tests:
-TEST(Statistics, MAPE) {}
+TEST(StatisticsTest, MAPE) {}
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
