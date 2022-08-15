@@ -65,6 +65,8 @@ class Benchmark {
 
   Result &getResult();
 
+  const Result& getResult() const;
+
  private:
 
   void setTimerBaselines();
