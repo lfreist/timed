@@ -10,16 +10,25 @@
 namespace timed {
 namespace utils {
 
+
 // ===== Time ====================================================================================================
 // ----- public ________________________________________________________________________________________________________
 // _____________________________________________________________________________________________________________________
-Time::Time(unsigned int days,
-                       unsigned int hours,
-                       unsigned int minutes,
-                       unsigned int seconds,
-                       unsigned int milliseconds,
-                       unsigned int microseconds,
-                       unsigned int nanoseconds) {
+TimeValueUnit::TimeValueUnit(double v, std::string u) {
+  value = v;
+  unit = std::move(u);
+}
+
+// ===== Time ====================================================================================================
+// ----- public ________________________________________________________________________________________________________
+// _____________________________________________________________________________________________________________________
+Time::Time(uint64_t days,
+           uint64_t hours,
+           uint64_t minutes,
+           uint64_t seconds,
+           uint64_t milliseconds,
+           uint64_t microseconds,
+           uint64_t nanoseconds) {
   _days = days;
   _hours = hours;
   _minutes = minutes;
@@ -27,7 +36,7 @@ Time::Time(unsigned int days,
   _milliseconds = milliseconds;
   _microseconds = microseconds;
   _nanoseconds = nanoseconds;
-  normalize();
+  _normalize();
 }
 
 // _____________________________________________________________________________________________________________________
@@ -58,7 +67,7 @@ Time::Time(const TimeValueUnit& timeVU) {
 // _____________________________________________________________________________________________________________________
 Time::Time(const std::string& time, const std::string& fmt) {
   parseTime(time, fmt);
-  normalize();
+  _normalize();
 }
 
 // _____________________________________________________________________________________________________________________
@@ -81,8 +90,7 @@ void Time::parseTime(const std::string& time, const std::string& fmt) {
     char c = fmt[i];
     switch (c) {
       case '%': {
-        if (lastPercent) { throw std::runtime_error("Invalid time format: " + fmt); }
-        lastPercent = true;
+        lastPercent = !lastPercent;
         break;
       }
       case 'd': {
@@ -130,7 +138,6 @@ void Time::parseTime(const std::string& time, const std::string& fmt) {
         break;
       }
       default: {
-        if (lastPercent) { throw std::runtime_error("Invalid time format: " + fmt); }
         break;
       }
     }
@@ -138,23 +145,8 @@ void Time::parseTime(const std::string& time, const std::string& fmt) {
 }
 
 // _____________________________________________________________________________________________________________________
-void Time::normalize() {
-  _nanoseconds = getNanoseconds();
-  _microseconds = _nanoseconds / 1000;
-  _nanoseconds = _nanoseconds - (_microseconds * 1000);
-  _milliseconds = _microseconds / 1000;
-  _microseconds = _microseconds - (_milliseconds * 1000);
-  _seconds = _milliseconds / 1000;
-  _milliseconds = _milliseconds - (_seconds * 1000);
-  _minutes = _seconds / 60;
-  _seconds = _seconds - (_minutes * 60);
-  _hours = _minutes / 60;
-  _minutes = _minutes - (_hours * 60);
-  _days = _hours / 24;
-  _hours = _hours - (_days * 24);
-}
-
-// _____________________________________________________________________________________________________________________
+// TODO: fix this: if no superior unit of a provided unit is provided -> calculate superior units into unit.
+//  e.g.: h is provided but d is not provided -> consider d as part of h: (h: 2, d: 1 -> h = 2 + 24 = 26)
 std::string Time::format(const std::string& fmt) const {
   if (fmt == "auto") {
     std::string autofmt;
@@ -187,7 +179,12 @@ std::string Time::format(const std::string& fmt) const {
       }
       case 'h': {
         if (lastPercent) {
-          ret += std::to_string(_hours);
+          if (fmt.find("%d") != std::string::npos) {
+            ret += std::to_string(_days * 24 + _hours);
+          }
+          else {
+            ret += std::to_string(_hours);
+          }
           lastPercent = false;
           break;
         }
@@ -199,7 +196,15 @@ std::string Time::format(const std::string& fmt) const {
             i++;
             ret += std::to_string(_milliseconds);
           } else {
-            ret += std::to_string(_minutes);
+            if (fmt.find("%d") != std::string::npos && fmt.find("%h") != std::string::npos) {
+              ret += std::to_string(_days * 24 * 60 + _hours * 60 + _minutes);
+            }
+            else if (fmt.find("%h") != std::string::npos) {
+              ret += std::to_string(_hours * 60 + _minutes);
+            }
+            else {
+              ret += std::to_string(_minutes);
+            }
           }
           lastPercent = false;
           break;
@@ -389,9 +394,6 @@ Time Time::operator-(const Time &t) const {
 
 // _____________________________________________________________________________________________________________________
 template<typename Numeric>
-#if __cplusplus >= 202002L
-requires std::is_integral<Numeric> || std::is_floating_point<Numeric>
-#endif
 Time Time::operator*(Numeric value) {
   return Time(value * _days, value + _hours, value + _minutes, value + _seconds,
                     value + _milliseconds, value + _microseconds, value + _nanoseconds);
@@ -405,9 +407,6 @@ Time Time::operator*(const Time& t) const {
 
 // _____________________________________________________________________________________________________________________
 template<typename Numeric>
-#if __cplusplus >= 202002L
-requires std::is_integral<Numeric> || std::is_floating_point<Numeric>
-#endif
 Time Time::operator/(Numeric value) {
   uint64_t ns = getNanoseconds() / value;
   return Time(0, 0, 0, 0, 0, 0, ns);
@@ -422,14 +421,14 @@ Time &Time::operator+=(const Time &t) {
   _milliseconds += t._milliseconds;
   _microseconds += t._microseconds;
   _nanoseconds += t._nanoseconds;
-  normalize();
+  _normalize();
   return *this;
 }
 
 // _____________________________________________________________________________________________________________________
 Time &Time::operator+=(uint64_t nanoseconds) {
   _nanoseconds += nanoseconds;
-  normalize();
+  _normalize();
   return *this;
 }
 
@@ -442,15 +441,12 @@ Time &Time::operator-=(const Time &t) {
   _milliseconds -= t._milliseconds;
   _microseconds -= t._microseconds;
   _nanoseconds -= t._nanoseconds;
-  normalize();
+  _normalize();
   return *this;
 }
 
 // _____________________________________________________________________________________________________________________
 template<typename Numeric>
-#if __cplusplus >= 202002L
-requires std::is_integral<Numeric> || std::is_floating_point<Numeric>
-#endif
 Time &Time::operator*=(Numeric value) {
   _days *= value;
   _hours *= value;
@@ -459,15 +455,12 @@ Time &Time::operator*=(Numeric value) {
   _milliseconds *= value;
   _microseconds *= value;
   _nanoseconds *= value;
-  normalize();
+  _normalize();
   return *this;
 }
 
 // _____________________________________________________________________________________________________________________
 template<typename Numeric>
-#if __cplusplus >= 202002L
-requires std::is_integral<Numeric> || std::is_floating_point<Numeric>
-#endif
 Time &Time::operator/=(Numeric value) {
   _nanoseconds = std::round(getNanoseconds() / value);
   _days = 0;
@@ -476,13 +469,18 @@ Time &Time::operator/=(Numeric value) {
   _seconds = 0;
   _milliseconds = 0;
   _microseconds = 0;
-  normalize();
+  _normalize();
   return *this;
 }
 
 // _____________________________________________________________________________________________________________________
 bool Time::operator==(const Time &t) const {
   return (getNanoseconds() == t.getNanoseconds());
+}
+
+// _____________________________________________________________________________________________________________________
+bool Time::operator!=(const Time &t) const {
+  return (getNanoseconds() != t.getNanoseconds());
 }
 
 // _____________________________________________________________________________________________________________________
@@ -520,6 +518,25 @@ Time::operator double () const {
   return static_cast<double>(getNanoseconds());
 }
 
+// ----- private -------------------------------------------------------------------------------------------------------
+// _____________________________________________________________________________________________________________________
+void Time::_normalize() {
+  _nanoseconds = getNanoseconds();
+  _microseconds = _nanoseconds / 1000;
+  _nanoseconds = _nanoseconds - (_microseconds * 1000);
+  _milliseconds = _microseconds / 1000;
+  _microseconds = _microseconds - (_milliseconds * 1000);
+  _seconds = _milliseconds / 1000;
+  _milliseconds = _milliseconds - (_seconds * 1000);
+  _minutes = _seconds / 60;
+  _seconds = _seconds - (_minutes * 60);
+  _hours = _minutes / 60;
+  _minutes = _minutes - (_hours * 60);
+  _days = _hours / 24;
+  _hours = _hours - (_days * 24);
+}
+
+// ----- ostream -------------------------------------------------------------------------------------------------------
 // _____________________________________________________________________________________________________________________
 std::ostream &operator<<(std::ostream &os, const Time &t) {
   os << t.format("auto");

@@ -48,6 +48,11 @@ TEST(WallTimerTest, start_stop) {
     auto time = wallTimer.stop();
     ASSERT_NEAR(time.getMilliseconds(), 100, 1);
   }
+  {
+    WallTimer wallTimer;
+    auto time = wallTimer.stop();
+    ASSERT_EQ(time.getNanoseconds(), 0);
+  }
 }
 
 TEST(WallTimerTest, start_pause) {
@@ -73,6 +78,11 @@ TEST(WallTimerTest, start_pause) {
     SLEEP_MS(100);
     wallTimer.stop();
     ASSERT_NEAR(wallTimer.getTime().getMilliseconds(), 200, 1);
+  }
+  {
+    WallTimer wallTimer;
+    auto time = wallTimer.pause();
+    ASSERT_EQ(time.getNanoseconds(), 0);
   }
 }
 
@@ -153,6 +163,11 @@ TEST(CPUTimerTest, start_stop) {
     auto time = cpuTimer.stop();
     ASSERT_NEAR(time.getMilliseconds(), 100, 1);
   }
+  {
+    CPUTimer cpuTimer;
+    auto time = cpuTimer.stop();
+    ASSERT_EQ(time.getNanoseconds(), 0);
+  }
 }
 
 TEST(CPUTimerTest, start_pause) {
@@ -178,6 +193,11 @@ TEST(CPUTimerTest, start_pause) {
     BUSY_WAIT_MS(100);
     time = cpuTimer.stop();
     ASSERT_NEAR(time.getMilliseconds(), 200, 1);
+  }
+  {
+    CPUTimer cpuTimer;
+    auto time = cpuTimer.pause();
+    ASSERT_EQ(time.getNanoseconds(), 0);
   }
 }
 

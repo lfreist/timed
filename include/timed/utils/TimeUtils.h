@@ -15,6 +15,8 @@ namespace timed {
 namespace utils {
 
 struct TimeValueUnit {
+  TimeValueUnit() = default;
+  explicit TimeValueUnit(double v, std::string u);
   double value = 0;
   std::string unit = "ns";
 };
@@ -22,16 +24,14 @@ struct TimeValueUnit {
 
 class Time {
  public:
-  explicit Time(unsigned days = 0, unsigned hours = 0, unsigned minutes = 0, unsigned seconds = 0,
-             unsigned milliseconds = 0, unsigned microseconds = 0, unsigned nanoseconds = 0);
+  explicit Time(uint64_t days = 0, uint64_t hours = 0, uint64_t minutes = 0, uint64_t seconds = 0,
+                uint64_t milliseconds = 0, uint64_t microseconds = 0, uint64_t nanoseconds = 0);
 
   explicit Time(const TimeValueUnit& timeVU);
 
   Time(const std::string& time, const std::string& fmt);
 
   void parseTime(const std::string& time, const std::string& fmt);
-
-  void normalize();
 
   std::string format(const std::string& fmt = "auto") const;
 
@@ -51,16 +51,10 @@ class Time {
   Time operator-(const Time& t) const;
 
   template<typename Numeric>
-#if __cplusplus >= 202002L
-  requires std::is_integral<Numeric> || std::is_floating_point<Numeric>
-#endif
   Time operator*(Numeric value);
   Time operator*(const Time& t) const;
 
   template<typename Numeric>
-#if __cplusplus >= 202002L
-  requires std::is_integral<Numeric> || std::is_floating_point<Numeric>
-#endif
   Time operator/(Numeric value);
 
   Time& operator+=(const Time& t);
@@ -68,18 +62,13 @@ class Time {
   Time& operator-=(const Time& t);
 
   template<typename Numeric>
-#if __cplusplus >= 202002L
-  requires std::is_integral<Numeric> || std::is_floating_point<Numeric>
-#endif
   Time& operator*=(Numeric value);
 
   template<typename Numeric>
-#if __cplusplus >= 202002L
-  requires std::is_integral<Numeric> || std::is_floating_point<Numeric>
-#endif
   Time& operator/=(Numeric value);
 
   bool operator==(const Time& t) const;
+  bool operator!=(const Time& t) const;
   bool operator>(const Time& t) const;
   bool operator>=(const Time& t) const;
   bool operator<(const Time& t) const;
@@ -87,11 +76,11 @@ class Time {
 
   explicit operator uint64_t() const;
   explicit operator long() const;
-  operator double() const;
-
-  static const std::map<std::string, std::string> validUnits;
+  explicit operator double() const;
 
  private:
+  void _normalize();
+
   uint64_t _days = 0;
   uint64_t _hours = 0;
   uint64_t _minutes = 0;
