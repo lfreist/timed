@@ -99,12 +99,12 @@ class Timer {
   /**
    * Pauses the timer. Timer can be resumed using start()
    */
-  virtual utils::Time pause() = 0;
+  virtual Time pause() = 0;
 
   /**
    * Stops the timer. If start() is called subsequent, it will remove previous data
    */
-  virtual utils::Time stop() = 0;
+  virtual Time stop() = 0;
 
   virtual void calibrate() = 0;
 
@@ -121,7 +121,7 @@ class Timer {
    * Get elapsed nanoseconds (ns) of collected intervals
    * @return long int: in nanoseconds
    */
-  [[nodiscard]] virtual utils::Time getTime() const = 0;
+  [[nodiscard]] virtual Time getTime() const = 0;
 
   /**
    * Returns all collected intervals
@@ -135,7 +135,7 @@ class Timer {
   bool _running = false;
   bool _stopped = false;
   std::vector<Interval> _intervals;
-  utils::Time _baseLine;
+  Time _baseLine;
 };
 
 /**
@@ -147,13 +147,13 @@ class WallTimer : Timer<SteadyClockInterval> {
 
   void start() override;
 
-  utils::Time pause() override;
+  Time pause() override;
 
-  utils::Time stop() override;
+  Time stop() override;
 
   void calibrate() override;
 
-  [[nodiscard]] utils::Time getTime() const override;
+  [[nodiscard]] Time getTime() const override;
 };
 
 
@@ -166,13 +166,13 @@ class CPUTimer : Timer<ClockTInterval> {
 
   void start() override;
 
-  utils::Time pause() override;
+  Time pause() override;
 
-  utils::Time stop() override;
+  Time stop() override;
 
   void calibrate() override;
 
-  [[nodiscard]] utils::Time getTime() const override;
+  [[nodiscard]] Time getTime() const override;
 };
 
 }  // namespace timed

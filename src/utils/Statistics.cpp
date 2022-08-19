@@ -8,9 +8,9 @@
 namespace timed {
 namespace utils {
 
-utils::Time min(const std::vector<utils::Time>& vec) {
-  if (vec.empty()) { return utils::Time(); }
-  utils::Time minTime(vec[0]);
+Time min(const std::vector<Time>& vec) {
+  if (vec.empty()) { return Time(); }
+  Time minTime(vec[0]);
   for (auto& t: vec) {
     if (t < minTime) {
       minTime = t;
@@ -19,9 +19,9 @@ utils::Time min(const std::vector<utils::Time>& vec) {
   return minTime;
 }
 
-utils::Time max(const std::vector<utils::Time>& vec) {
-  if (vec.empty()) { return utils::Time(); }
-  utils::Time minTime(vec[0]);
+Time max(const std::vector<Time>& vec) {
+  if (vec.empty()) { return Time(); }
+  Time minTime(vec[0]);
   for (auto& t: vec) {
     if (t > minTime) {
       minTime = t;
@@ -30,36 +30,36 @@ utils::Time max(const std::vector<utils::Time>& vec) {
   return minTime;
 }
 
-utils::Time mean(const std::vector<utils::Time>& vec) {
+Time mean(const std::vector<Time>& vec) {
   std::vector<uint64_t> nsVec(vec.size());
-  std::transform(vec.begin(), vec.end(), nsVec.begin(), [](utils::Time t) { return t.getNanoseconds(); });
-  utils::TimeValueUnit tvu;
+  std::transform(vec.begin(), vec.end(), nsVec.begin(), [](Time t) { return t.getNanoseconds(); });
+  TimeValueUnit tvu;
   tvu.value = mean(nsVec);
   tvu.unit = "ns";
-  return utils::Time(tvu);
+  return Time(tvu);
 }
 
-utils::Time stddev(const std::vector<utils::Time>& vec) {
+Time stddev(const std::vector<Time>& vec) {
   std::vector<uint64_t> nsVec(vec.size());
-  std::transform(vec.begin(), vec.end(), nsVec.begin(), [](utils::Time t) { return t.getNanoseconds(); });
-  utils::TimeValueUnit tvu;
+  std::transform(vec.begin(), vec.end(), nsVec.begin(), [](Time t) { return t.getNanoseconds(); });
+  TimeValueUnit tvu;
   tvu.value = medianAbsolutePercentError(nsVec);
   tvu.unit = "ns";
-  return utils::Time(tvu);
+  return Time(tvu);
 }
 
-utils::Time median(const std::vector<utils::Time>& vec) {
+Time median(const std::vector<Time>& vec) {
   std::vector<uint64_t> nsVec(vec.size());
-  std::transform(vec.begin(), vec.end(), nsVec.begin(), [](utils::Time t) { return t.getNanoseconds(); });
-  utils::TimeValueUnit tvu;
+  std::transform(vec.begin(), vec.end(), nsVec.begin(), [](Time t) { return t.getNanoseconds(); });
+  TimeValueUnit tvu;
   tvu.value = static_cast<double>(median(nsVec));
   tvu.unit = "ns";
-  return utils::Time(tvu);
+  return Time(tvu);
 }
 
-double medianAbsolutePercentError(const std::vector<utils::Time>& vec) {
+double medianAbsolutePercentError(const std::vector<Time>& vec) {
   std::vector<uint64_t> nsVec(vec.size());
-  std::transform(vec.begin(), vec.end(), nsVec.begin(), [](utils::Time t) { return t.getNanoseconds(); });
+  std::transform(vec.begin(), vec.end(), nsVec.begin(), [](Time t) { return t.getNanoseconds(); });
   return medianAbsolutePercentError(nsVec);
 }
 

@@ -8,7 +8,7 @@
 
 #include "timed/TimeUtils.h"
 
-using namespace timed::utils;
+using namespace timed;
 
 // ----- TimeValueUnit -------------------------------------------------------------------------------------------------
 TEST(TimeValueUnitTest, constructor) {

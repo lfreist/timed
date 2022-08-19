@@ -8,7 +8,6 @@
 #include "timed/TimeUtils.h"
 
 namespace timed {
-namespace utils {
 
 
 // ===== Time ====================================================================================================
@@ -554,6 +553,4 @@ std::ostream &operator<<(std::ostream &os, const Time &t) {
   return os;
 }
 
-
-}  // namespace utils
 }  // namespace timed

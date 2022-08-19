@@ -21,18 +21,18 @@ void WallTimer::start() {
 }
 
 // _____________________________________________________________________________________________________________________
-utils::Time WallTimer::pause() {
+Time WallTimer::pause() {
   if (!_running) { return getTime(); }
   auto now = std::chrono::steady_clock::now();
   _intervals.back().second = now;
   _running = false;
-  return utils::Time(0, 0, 0, 0, 0, 0,
+  return Time(0, 0, 0, 0, 0, 0,
                      std::chrono::duration_cast<std::chrono::nanoseconds>(
                          _intervals.back().second - _intervals.back().first).count());
 }
 
 // _____________________________________________________________________________________________________________________
-utils::Time WallTimer::stop() {
+Time WallTimer::stop() {
   if (!_running) { return getTime(); }
   auto now = std::chrono::steady_clock::now();
   _intervals.back().second = now;
@@ -44,7 +44,7 @@ utils::Time WallTimer::stop() {
 // _____________________________________________________________________________________________________________________
 void WallTimer::calibrate() {
   WallTimer wt;
-  std::vector<utils::Time> t(1000);
+  std::vector<Time> t(1000);
   for (int i = 0; i < 1000; ++i) {
     wt.start();
     t[i] = wt.stop();
@@ -54,12 +54,12 @@ void WallTimer::calibrate() {
 }
 
 // _____________________________________________________________________________________________________________________
-utils::Time WallTimer::getTime() const {
+Time WallTimer::getTime() const {
   std::chrono::time_point<std::chrono::steady_clock> now;
   if (_running) {
     now = std::chrono::steady_clock::now();
   }
-  utils::Time time;
+  Time time;
   for (auto &interval: _intervals) {
     if (_running && interval == _intervals.back()) {
       time += std::chrono::duration_cast<std::chrono::nanoseconds>(now - interval.first).count();
@@ -92,18 +92,18 @@ void CPUTimer::start() {
 }
 
 // _____________________________________________________________________________________________________________________
-utils::Time CPUTimer::pause() {
+Time CPUTimer::pause() {
   if (!_running) { return getTime(); }
   auto now = std::clock();
   _intervals.back().second = now;
   auto ms = static_cast<uint64_t>(1000.0 * static_cast<double>(_intervals.back().second - _intervals.back().first) /
                                   CLOCKS_PER_SEC);
   _running = false;
-  return utils::Time(0, 0, 0, 0, ms, 0, 0);
+  return Time(0, 0, 0, 0, ms, 0, 0);
 }
 
 // _____________________________________________________________________________________________________________________
-utils::Time CPUTimer::stop() {
+Time CPUTimer::stop() {
   if (!_running) { return getTime(); }
   auto now = std::clock();
   _intervals.back().second = now;
@@ -115,7 +115,7 @@ utils::Time CPUTimer::stop() {
 // _____________________________________________________________________________________________________________________
 void CPUTimer::calibrate() {
   CPUTimer cput;
-  std::vector<utils::Time> t(1000);
+  std::vector<Time> t(1000);
   for (int i = 0; i < 1000; ++i) {
     cput.start();
     cput.stop();
@@ -125,15 +125,15 @@ void CPUTimer::calibrate() {
 }
 
 // _____________________________________________________________________________________________________________________
-utils::Time CPUTimer::getTime() const {
+Time CPUTimer::getTime() const {
   double time = 0;
   for (auto &interval: _intervals) {
     time += 1000.0 * static_cast<double>(interval.second - interval.first) / CLOCKS_PER_SEC;
   }
-  utils::TimeValueUnit tvu;
+  TimeValueUnit tvu;
   tvu.value = time * 1000 * 1000;
   tvu.unit = "ns";
-  return utils::Time(tvu) - _baseLine;
+  return Time(tvu) - _baseLine;
 }
 
 }  // namespace timed

@@ -77,22 +77,22 @@ double medianAbsolutePercentError(std::vector<Numeric> vec) {
 }
 
 #ifdef _WIN32
-utils::Time (min)(const std::vector<utils::Time>& vec);
+Time (min)(const std::vector<Time>& vec);
 
-utils::Time (max)(const std::vector<utils::Time>& vec);
+Time (max)(const std::vector<Time>& vec);
 #else
-utils::Time min(const std::vector<utils::Time>& vec);
+Time min(const std::vector<Time>& vec);
 
-utils::Time max(const std::vector<utils::Time>& vec);
+Time max(const std::vector<Time>& vec);
 #endif
 
-utils::Time mean(const std::vector<utils::Time>& vec);
+Time mean(const std::vector<Time>& vec);
 
-utils::Time stddev(const std::vector<utils::Time>& vec);
+Time stddev(const std::vector<Time>& vec);
 
-utils::Time median(const std::vector<utils::Time>& vec);
+Time median(const std::vector<Time>& vec);
 
-double medianAbsolutePercentError(const std::vector<utils::Time>& vec);
+double medianAbsolutePercentError(const std::vector<Time>& vec);
 
 }  // namespace utils
 }  // namespace timed

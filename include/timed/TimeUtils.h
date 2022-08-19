@@ -12,7 +12,6 @@
 #define TIMED_UTILS_TIMECONVERTER_H_
 
 namespace timed {
-namespace utils {
 
 struct TimeValueUnit {
   TimeValueUnit() = default;
@@ -96,8 +95,6 @@ class Time {
 
 std::ostream &operator<<(std::ostream &os, const Time &tf);
 
-
-}  // namespace utils
 }  // namespace timed
 
 #endif  // TIMED_UTILS_TIMECONVERTER_H_
