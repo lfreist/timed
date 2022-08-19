@@ -13,7 +13,7 @@
 #include <utility>
 #include <vector>
 
-#include "timed/utils/TimeUtils.h"
+#include "timed/TimeUtils.h"
 #include "timed/utils/Statistics.h"
 
 // ----- sleep macros --------------------------------------------------------------------------------------------------

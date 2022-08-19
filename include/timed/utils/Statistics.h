@@ -8,7 +8,7 @@
 #include <numeric>
 #include <algorithm>
 
-#include "timed/utils/TimeUtils.h"
+#include "timed/TimeUtils.h"
 
 
 #ifndef TIMED_UTILS_STATISTICS_H_

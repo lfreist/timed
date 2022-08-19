@@ -5,7 +5,7 @@
 
 #include <cmath>
 
-#include "timed/utils/TimeUtils.h"
+#include "timed/TimeUtils.h"
 
 namespace timed {
 namespace utils {

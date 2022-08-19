@@ -1,5 +1,2 @@
-add_executable(TimeUtilsTest TimeUtilsTest.cpp)
-target_link_libraries(TimeUtilsTest Utils gtest_main)
-
 add_executable(StatisticsTest StatisticsTest.cpp)
-target_link_libraries(StatisticsTest Utils gtest_main)
+target_link_libraries(StatisticsTest TimeUtils Statistics gtest_main)

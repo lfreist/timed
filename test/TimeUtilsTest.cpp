@@ -6,7 +6,7 @@
 
 #include <gtest/gtest.h>
 
-#include "timed/utils/TimeUtils.h"
+#include "timed/TimeUtils.h"
 
 using namespace timed::utils;
 
