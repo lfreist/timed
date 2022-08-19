@@ -141,7 +141,7 @@ class Timer {
 /**
  * WallTimer: simple timer to measure wall time from start() to stop()/pause() call.
  */
-class WallTimer : Timer<SteadyClockInterval> {
+class WallTimer : public Timer<SteadyClockInterval> {
  public:
   WallTimer() = default;
 
@@ -160,7 +160,7 @@ class WallTimer : Timer<SteadyClockInterval> {
 /**
  * CPUTimer: timer to measure CPU time from start() to stop()/pause() call.
  */
-class CPUTimer : Timer<ClockTInterval> {
+class CPUTimer : public Timer<ClockTInterval> {
  public:
   CPUTimer();
 
