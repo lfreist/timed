@@ -22,34 +22,34 @@ std::ostream &operator<<(std::ostream &os, const Config &config) {
 
 // ===== Results =======================================================================================================
 // _____________________________________________________________________________________________________________________
-void Result::addCpuTime(utils::Time time) {
+void Result::addCpuTime(Time time) {
   cpuTimes.push_back(time);
 }
 
 // _____________________________________________________________________________________________________________________
-void Result::addWallTime(utils::Time time) {
+void Result::addWallTime(Time time) {
   wallTimes.push_back(time);
 }
 
 // _____________________________________________________________________________________________________________________
-std::vector<utils::Time> Result::adjustedCPUTimes() const {
-  std::vector<utils::Time> adjustedTimes(cpuTimes.size());
-  utils::Time baseline = cpuTimeBaseline;
+std::vector<Time> Result::adjustedCPUTimes() const {
+  std::vector<Time> adjustedTimes(cpuTimes.size());
+  Time baseline = cpuTimeBaseline;
   std::transform(cpuTimes.begin(),
                  cpuTimes.end(),
                  adjustedTimes.begin(),
-                 [baseline](utils::Time x) { return x - baseline; });
+                 [baseline](Time x) { return x - baseline; });
   return adjustedTimes;
 }
 
 // _____________________________________________________________________________________________________________________
-std::vector<utils::Time> Result::adjustedWallTimes() const {
-  std::vector<utils::Time> adjustedTimes(wallTimes.size());
-  utils::Time baseline = wallTimeBaseline;
+std::vector<Time> Result::adjustedWallTimes() const {
+  std::vector<Time> adjustedTimes(wallTimes.size());
+  Time baseline = wallTimeBaseline;
   std::transform(wallTimes.begin(),
                  wallTimes.end(),
                  adjustedTimes.begin(),
-                 [baseline](utils::Time x) { return x - baseline; });
+                 [baseline](Time x) { return x - baseline; });
   return adjustedTimes;
 }
 
