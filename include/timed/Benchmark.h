@@ -34,18 +34,18 @@ std::ostream &operator<<(std::ostream &os, const Config &config);
 struct Result {
   std::string title = "Benchmark";
   std::string info;
-  std::vector<utils::Time> wallTimes;
-  std::vector<utils::Time> cpuTimes;
-  utils::Time wallTimeBaseline;
-  utils::Time cpuTimeBaseline;
+  std::vector<Time> wallTimes;
+  std::vector<Time> cpuTimes;
+  Time wallTimeBaseline;
+  Time cpuTimeBaseline;
 
-  void addWallTime(utils::Time time);
+  void addWallTime(Time time);
 
-  void addCpuTime(utils::Time time);
+  void addCpuTime(Time time);
 
-  [[nodiscard]] std::vector<utils::Time> adjustedWallTimes() const;
+  [[nodiscard]] std::vector<Time> adjustedWallTimes() const;
 
-  [[nodiscard]] std::vector<utils::Time> adjustedCPUTimes() const;
+  [[nodiscard]] std::vector<Time> adjustedCPUTimes() const;
 };
 
 std::ostream &operator<<(std::ostream &os, const Result &result);
